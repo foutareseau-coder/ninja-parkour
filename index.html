@@ -29,7 +29,6 @@ function updateHud(){livesEl.textContent='❤️'.repeat(lives)+'🖤'.repeat(3-
 function jump(){if(over){reset();return}if(ninja.ground){ninja.vy=-14;ninja.ground=false}}
 document.getElementById('jump').onclick=jump;c.onclick=jump;document.getElementById('restart').onclick=reset;
 addEventListener('keydown',e=>{if(e.code==='Space'||e.code==='ArrowUp'){e.preventDefault();jump()}});
-function drawNinja()
 function drawNinja() {
   const px = ninja.x;
   const py = ninja.y;
