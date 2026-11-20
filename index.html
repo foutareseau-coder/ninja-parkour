@@ -146,7 +146,8 @@ function loop(){
  for(let o of coins){let dx=(ninja.x+21)-(o.x),dy=(ninja.y+25)-o.y;if(Math.hypot(dx,dy)<34){score++;o.x=-50;updateHud()}}
  }
  obstacles.forEach(drawSpike);coins.forEach(o=>{x.fillStyle='#ffd34d';x.beginPath();x.arc(o.x,o.y,o.r,0,7);x.fill();x.strokeStyle='#d18a00';x.lineWidth=4;x.stroke()});
- drawNinja();
+ x.fillStyle = "blue";
+x.fillRect(ninja.x, ninja.y, ninja.w, ninja.h);
  if(over){x.fillStyle='rgba(10,18,32,.72)';x.fillRect(0,0,900,420);x.fillStyle='#fff';x.textAlign='center';x.font='bold 48px system-ui';x.fillText('PARTIE TERMINÉE !',450,190);x.font='28px system-ui';x.fillText('Pièces : '+score+' — Appuie sur Recommencer',450,240)}
  requestAnimationFrame(loop)
 }
