@@ -26,6 +26,8 @@ const livesEl=document.getElementById('lives'),scoreEl=document.getElementById('
 let ninja,obstacles,coins,score,lives,speed,frame,over,started;
 let bestScore = Number(localStorage.getItem("ninjaBestScore")) || 0;
 let newRecord = false;
+let saluteTimer = 0;
+
 function reset() {
   ninja = {x:105,y:315,vy:0,w:42,h:58,ground:true};
   obstacles = [];
@@ -37,16 +39,20 @@ function reset() {
   over = false;
   started = true;
   newRecord = false;
+  saluteTimer = 0;
   updateHud();
-} 
+}
 function updateHud() {
   livesEl.textContent = '❤️'.repeat(lives) + '🖤'.repeat(3-lives);
 
-  if (score > bestScore) {
-    bestScore = score;
-    newRecord = true;
-    localStorage.setItem("ninjaBestScore", bestScore);
+ if (score > bestScore) {
+  if (!newRecord) {
+    saluteTimer = 90;
   }
+  bestScore = score;
+  newRecord = true;
+  localStorage.setItem("ninjaBestScore", bestScore);
+}
 
   scoreEl.textContent = 'Pièces : ' + score + ' | Record : ' + bestScore;
 }
@@ -92,15 +98,18 @@ function drawNinja() {
   x.fill();
 
   // Bras
-  x.fillStyle = "#102b58";
-  x.fillRect(1, 22, 9, 19);
+x.fillStyle = "#102b58";
+x.fillRect(1, 22, 9, 19);
+
+if (saluteTimer <= 0) {
   x.fillRect(34, 22, 9, 19);
-
-  // Protections des bras
-  x.fillStyle = "#168cff";
-  x.fillRect(1, 29, 9, 5);
-  x.fillRect(34, 29, 9, 5);
-
+} else {
+  x.save();
+  x.translate(36, 27);
+  x.rotate(-0.8);
+  x.fillRect(-4, -19, 9, 23);
+  x.restore();
+}
   // Gants
   x.fillStyle = "#020817";
   x.fillRect(0, 38, 10, 6);
@@ -157,7 +166,10 @@ function drawNinja() {
 
 function drawSpike(o){x.fillStyle='#e53935';x.beginPath();x.moveTo(o.x,373);x.lineTo(o.x+22,333);x.lineTo(o.x+44,373);x.closePath();x.fill()}
 function loop(){
- x.clearRect(0,0,900,420);x.fillStyle='#fff';for(let i=0;i<5;i++){let cx=(i*205-frame*0.35)%1000;x.beginPath();x.arc(cx,65,20,0,7);x.arc(cx+22,65,26,0,7);x.arc(cx+48,65,18,0,7);x.fill()}
+ x.clearRect(0,0,900,420); if (saluteTimer > 0) {
+  saluteTimer--;
+}
+  x.fillStyle='#fff';for(let i=0;i<5;i++){let cx=(i*205-frame*0.35)%1000;x.beginPath();x.arc(cx,65,20,0,7);x.arc(cx+22,65,26,0,7);x.arc(cx+48,65,18,0,7);x.fill()}
  x.fillStyle='#438b42';x.fillRect(0,373,900,47);x.fillStyle='#286b35';for(let i=0;i<30;i++)x.fillRect((i*38-frame*speed%38),390,18,5);
  if(!over){
  frame++;speed=5+Math.min(score*.04,4);
