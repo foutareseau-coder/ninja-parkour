@@ -24,8 +24,32 @@ button{border:0;border-radius:14px;padding:13px 24px;background:#ffd34d;color:#1
 const c=document.getElementById('game'),x=c.getContext('2d');
 const livesEl=document.getElementById('lives'),scoreEl=document.getElementById('score');
 let ninja,obstacles,coins,score,lives,speed,frame,over,started;
-function reset(){ninja={x:105,y:315,vy:0,w:42,h:58,ground:true};obstacles=[];coins=[];score=0;lives=3;speed=5;frame=0;over=false;started=true;updateHud()}
-function updateHud(){livesEl.textContent='❤️'.repeat(lives)+'🖤'.repeat(3-lives);scoreEl.textContent='Pièces : '+score}
+let bestScore = Number(localStorage.getItem("ninjaBestScore")) || 0;
+let newRecord = false;
+function reset() {
+  ninja = {x:105,y:315,vy:0,w:42,h:58,ground:true};
+  obstacles = [];
+  coins = [];
+  score = 0;
+  lives = 3;
+  speed = 5;
+  frame = 0;
+  over = false;
+  started = true;
+  newRecord = false;
+  updateHud();
+} 
+function updateHud() {
+  livesEl.textContent = '❤️'.repeat(lives) + '🖤'.repeat(3-lives);
+
+  if (score > bestScore) {
+    bestScore = score;
+    newRecord = true;
+    localStorage.setItem("ninjaBestScore", bestScore);
+  }
+
+  scoreEl.textContent = 'Pièces : ' + score + ' | Record : ' + bestScore;
+}
 function jump(){if(over){reset();return}if(ninja.ground){ninja.vy=-14;ninja.ground=false}}
 document.getElementById('jump').onclick=jump;c.onclick=jump;document.getElementById('restart').onclick=reset;
 addEventListener('keydown',e=>{if(e.code==='Space'||e.code==='ArrowUp'){e.preventDefault();jump()}});
@@ -146,8 +170,7 @@ function loop(){
  for(let o of coins){let dx=(ninja.x+21)-(o.x),dy=(ninja.y+25)-o.y;if(Math.hypot(dx,dy)<34){score++;o.x=-50;updateHud()}}
  }
  obstacles.forEach(drawSpike);coins.forEach(o=>{x.fillStyle='#ffd34d';x.beginPath();x.arc(o.x,o.y,o.r,0,7);x.fill();x.strokeStyle='#d18a00';x.lineWidth=4;x.stroke()});
- x.fillStyle = "blue";
-x.fillRect(ninja.x, ninja.y, ninja.w, ninja.h);
+ drawNinja();
  if(over){x.fillStyle='rgba(10,18,32,.72)';x.fillRect(0,0,900,420);x.fillStyle='#fff';x.textAlign='center';x.font='bold 48px system-ui';x.fillText('PARTIE TERMINÉE !',450,190);x.font='28px system-ui';x.fillText('Pièces : '+score+' — Appuie sur Recommencer',450,240)}
  requestAnimationFrame(loop)
 }
